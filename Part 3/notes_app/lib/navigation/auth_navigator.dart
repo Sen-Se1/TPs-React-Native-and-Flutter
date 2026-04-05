@@ -14,28 +14,14 @@ class AuthNavigator extends StatelessWidget {
 
     // Show loading indicator while checking auth status
     if (authProvider.loading) {
-      return const MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
         ),
       );
     }
 
-    return MaterialApp(
-      title: 'Notes App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
-      // Choose initial route based on auth status
-      initialRoute: authProvider.isAuthenticated ? '/home' : '/auth',
-      routes: {
-        '/auth': (context) => const AuthScreen(),
-        '/home': (context) => const HomeScreen(),
-        '/notes': (context) => const NotesScreen(),
-      },
-    );
+    // Choose screen based on auth status
+    return authProvider.isAuthenticated ? const HomeScreen() : const AuthScreen();
   }
 }

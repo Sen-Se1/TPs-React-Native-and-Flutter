@@ -26,9 +26,15 @@ class _EditNoteModalState extends State<EditNoteModal> {
   @override
   void initState() {
     super.initState();
-    // Initialize text controllers with note data
-    _titleController = TextEditingController(text: widget.note.data['title']);
-    _contentController = TextEditingController(text: widget.note.data['content']);
+    // Initialize text controllers with note data, providing fallbacks for different schemas
+    _titleController = TextEditingController(
+      text: widget.note.data['title']?.toString() ?? 'Note',
+    );
+    _contentController = TextEditingController(
+      text: widget.note.data['content']?.toString() ?? 
+            widget.note.data['text']?.toString() ?? 
+            '',
+    );
   }
 
   @override

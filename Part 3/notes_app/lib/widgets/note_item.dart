@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:appwrite/models.dart';
 import '../services/note_service.dart';
+import 'edit_note_modal.dart';
 
 class NoteItem extends StatefulWidget {
   final Document note;
   final Function(String)? onNoteDeleted;
+  final Function(Document)? onNoteUpdated;
 
   const NoteItem({
     Key? key,
     required this.note,
     this.onNoteDeleted,
+    this.onNoteUpdated,
   }) : super(key: key);
 
   @override
@@ -84,11 +87,28 @@ class _NoteItemState extends State<NoteItem> {
     }
   }
 
+  // Show the edit note modal
+  void _showEditModal() {
+    showDialog(
+      context: context,
+      builder: (context) => EditNoteModal(
+        note: widget.note,
+        onNoteUpdated: (updatedNote) {
+          if (widget.onNoteUpdated != null) {
+            widget.onNoteUpdated!(updatedNote);
+          }
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Extract note data
-    final title = widget.note.data['title'] as String;
-    final content = widget.note.data['content'] as String;
+    // Extract note data with fallbacks for different schemas
+    final title = widget.note.data['title']?.toString() ?? 'Note';
+    final content = widget.note.data['content']?.toString() ?? 
+                   widget.note.data['text']?.toString() ?? 
+                   'No content';
     final updatedAt = widget.note.$updatedAt;
 
     return Card(
@@ -127,6 +147,12 @@ class _NoteItemState extends State<NoteItem> {
                   ),
                 ],
               ),
+            ),
+
+            // Edit button
+            IconButton(
+              icon: const Icon(Icons.edit, color: Colors.blue),
+              onPressed: _showEditModal,
             ),
 
             // Delete button

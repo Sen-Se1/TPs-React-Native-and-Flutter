@@ -103,6 +103,13 @@ class _NotesScreenState extends State<NotesScreen> {
     });
   }
 
+  // Handle note updates by replacing the note in the state
+  void _handleNoteUpdated(Document updatedNote) {
+    setState(() {
+      _notes = _notes.map((note) => note.$id == updatedNote.$id ? updatedNote : note).toList();
+    });
+  }
+
   Widget _buildEmptyNotesView() {
     return Center(
       child: Column(
@@ -156,6 +163,7 @@ class _NotesScreenState extends State<NotesScreen> {
                       return NoteItem(
                         note: _notes[index],
                         onNoteDeleted: _handleNoteDeleted,
+                        onNoteUpdated: _handleNoteUpdated,
                       );
                     },
                   ),
